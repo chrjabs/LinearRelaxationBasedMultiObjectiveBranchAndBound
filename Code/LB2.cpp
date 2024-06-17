@@ -1957,7 +1957,7 @@ int LinearRelaxation::computeMedianSplittingValue(SLUB& slub, int i, int maxUb) 
 
 	//std::cout << "split val: " << splittingValue << "\n";
 
-	return min(splittingValue, maxUb - 1);
+	return std::min(splittingValue, maxUb - 1);
 }
 
 /*! \brief Computes most often fractional value of variable $x_i$ among the extreme points of the linear relaxation.
@@ -2021,7 +2021,7 @@ int LinearRelaxation::computeMostOftenFractionalSplittingValue(SLUB& slub, int i
 		}
 	}
 
-	return min(vl, maxUb - 1);
+	return std::min(vl, maxUb - 1);
 }
 
 /*! \brief Computes most often fractional value of variable $x_i$ among the extreme points of the linear relaxation.
@@ -2068,7 +2068,7 @@ int LinearRelaxation::computeRandomSplittingValue(SLUB& slub, int i, int maxUb) 
 	if (valSplit == branchDec->ub[i])
 		valSplit--;
 
-	return min(valSplit, maxUb - 1);
+	return std::min(valSplit, maxUb - 1);
 }
 
 void LinearRelaxation::exportIteration() {
@@ -2894,7 +2894,7 @@ void LinearRelaxation::checkViolatingCut(BranchingDecisions* bd) {
 
 					cutIdx.clear();
 					// set initial rhs & add variables that take value 1 to the cut
-					s = min(bd->slub[k], 1000000) - 1;
+					s = std::min(bd->slub[k], 1000000) - 1;
 					for (int i = 0; i < lp->get_n(); i++) {
 						if ((*y)->get_preImage(i) >= 1 - EPS_INT && lp->get_objective(k, i) > 0) {
 							s -= lp->get_objective(k, i); // int((*y)->get_preImage(i));

@@ -1,5 +1,7 @@
 #include "Node.h"
 
+#include <cfloat>
+
 /* ==========================================================
         Constructors
  ========================================================= */
@@ -432,7 +434,7 @@ void Node::splitOS(TreeManager* T, UpperBoundSet* U, int iteration) {
                 s2++;
                 while (s2 != S.end()) {
                     for (int k = 0; k < P->get_p(); k++) {
-                        intersectionPoint[k] = min((*s1)->get_coordinate(k), (*s2)->get_coordinate(k));
+                        intersectionPoint[k] = std::min((*s1)->get_coordinate(k), (*s2)->get_coordinate(k));
                     }
                     if (LB->dominates(intersectionPoint)) {
                         (*s1)->merge(**s2);
@@ -1132,7 +1134,7 @@ void Node::computeCoverCuts() {
             rhs = branchingDecision.slub[k];
             for (int i = 0; i < P->get_n(); i++) {
                 if (branchingDecision.lb[i] == 1) {
-                    rhs -= max(P->get_objective(k, i), 0);
+                    rhs -= std::max(P->get_objective(k, i), 0);
                 }
             }
             coverCuts[k].push_back(rhs);
@@ -1237,7 +1239,7 @@ void Node::computeCoverCuts(BranchingDecisions& bd) {
             rhs = bd.slub[k];
             for (int i = 0; i < P->get_n(); i++) {
                 if (bd.lb[i] == 1) {
-                    rhs -= max(P->get_objective(k, i), 0);
+                    rhs -= std::max(P->get_objective(k, i), 0);
                 }
             }
             coverCuts[k].push_back(rhs);
@@ -1319,7 +1321,7 @@ void Node::computeMofCoverCuts(BranchingDecisions& bd) {
             rhs = bd.slub[k];
             for (int i = 0; i < P->get_n(); i++) {
                 if (bd.lb[i] == 1) {
-                    rhs -= max(P->get_objective(k, i), 0);
+                    rhs -= std::max(P->get_objective(k, i), 0);
                 }
             }
             coverCuts[k].push_back(rhs);
@@ -2142,13 +2144,13 @@ bool Node::manualInspection(BranchingDecisions* newBd0, BranchingDecisions* newB
 
                 if (P->get_constraint(j, i) > 0) {
                     //std::cout << " ub = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
-                    newBd1->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
+                    newBd0->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
+                    newBd1->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
                 }
                 else {
                     //std::cout << " lb = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
-                    newBd1->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
+                    newBd0->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
+                    newBd1->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
                 }
             }
 
@@ -2163,13 +2165,13 @@ bool Node::manualInspection(BranchingDecisions* newBd0, BranchingDecisions* newB
 
                 if (P->get_constraint(j, i) > 0) {
                     //std::cout << " lb = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
-                    newBd1->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
+                    newBd0->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
+                    newBd1->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
                 }
                 else {
                     //std::cout << " ub = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
-                    newBd1->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
+                    newBd0->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
+                    newBd1->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
                 }
 
             }
@@ -2250,13 +2252,13 @@ bool Node::manualInspection(BranchingDecisions* newBd0, BranchingDecisions* newB
 
                 if (P->get_constraint(j, i) > 0) {
                     //std::cout << " ub = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
-                    newBd1->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
+                    newBd0->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
+                    newBd1->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]); // remove min(1, .) for general integer?
                 }
                 else {
                     //std::cout << " lb = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
-                    newBd1->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
+                    newBd0->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
+                    newBd1->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]); // remove min(1, .) for general integer?
                 }
             }
 
@@ -2273,13 +2275,13 @@ bool Node::manualInspection(BranchingDecisions* newBd0, BranchingDecisions* newB
 
                 if (P->get_constraint(j, i) > 0) {
                     //std::cout << " lb = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
-                    newBd1->lb[i] = max(min(1, max(0, ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
+                    newBd0->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
+                    newBd1->lb[i] = std::max(std::min(1, std::max(0, (int)std::ceil(rhs / P->get_constraint(j, i)))), newBd0->lb[i]);
                 }
                 else {
                     //std::cout << " ub = " << rhs << " / " << P->get_constraint(j, i) << " = " << rhs / P->get_constraint(j, i) << "\n";
-                    newBd0->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
-                    newBd1->ub[i] = min(max(0, min(1, trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
+                    newBd0->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
+                    newBd1->ub[i] = std::min(std::max(0, std::min(1, (int)std::trunc(rhs / P->get_constraint(j, i)))), newBd0->ub[i]);
                 }
 
             }
@@ -2656,14 +2658,14 @@ int Node::selectBranchingIndex1(BranchingDecisions* newbd0, BranchingDecisions* 
     //std::cout << "\n region: ";
     for (int i = 0; i < P->get_n(); i++) {
         for (int k = 0; k < P->get_p(); k++) {
-            dec0[i].slub[k] = min(dec0[i].slub[k], P->getUbObj(k));
-            dec1[i].slub[k] = min(dec1[i].slub[k], P->getUbObj(k));
+            dec0[i].slub[k] = std::min(dec0[i].slub[k], P->getUbObj(k));
+            dec1[i].slub[k] = std::min(dec1[i].slub[k], P->getUbObj(k));
             //std::cout << newbd->slub[k] << " ";
         }
 
     }
     for (int k = 0; k < P->get_p(); k++) {
-        newbd0->slub[k] = min(newbd0->slub[k], P->getUbObj(k));
+        newbd0->slub[k] = std::min(newbd0->slub[k], P->getUbObj(k));
         //std::cout << newbd->slub[k] << " ";
     }
     //std::cout << "\n";
@@ -2806,7 +2808,7 @@ void Node::mergeSlubs(std::list<SLUB*>* S) {
             s2++;
             while (s2 != S->end()) {
                 for (int k = 0; k < P->get_p(); k++) {
-                    intersectionPoint[k] = min((*s1)->get_coordinate(k), (*s2)->get_coordinate(k));
+                    intersectionPoint[k] = std::min((*s1)->get_coordinate(k), (*s2)->get_coordinate(k));
                 }
                 if (LB->dominates(intersectionPoint)) {
                     (*s1)->merge(**s2);
