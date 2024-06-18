@@ -471,7 +471,6 @@ void BranchAndBound::writeDepthStatistics() {
      * This function write the statistics of this BB run to the stat file.
      */
 void BranchAndBound::writeUB() {
-
     std::ofstream file;
 
     // build path to output file
@@ -518,6 +517,29 @@ void BranchAndBound::writeUB() {
 
     file.close();
 
+}
+
+void BranchAndBound::printUB(bool printSol) {
+    std::cout << "===[ Pareto Front ]=============================================================" << std::endl;
+
+    std::list<Solution*>* YN = U.getYN();
+    for (std::list<Solution*>::iterator s = YN->begin(); s != YN->end(); s++) {
+        std::cout << "---[ Non-dominated point ]------------------------------------------------------" << std::endl;
+        std::cout << "cpu time: " << (*s)->getCpu() << std::endl;
+        std::cout << "o";
+        for (int k = 0; k < lp.get_p(); k++) {
+            std::cout << " " << (*s)->get_objVector(k);
+        }
+        std::cout << std::endl;
+        if (printSol) {
+            // Note: this output is only meaningful for 0-1 variables
+            std::cout << "v";
+            for (int v = 0; v < lp.get_n(); v++) {
+                std::cout << " " << ((*s)->get_preImage(v) > 0 ? "" : "-") << "x" << v + 1;
+            }
+            std::cout << std::endl;
+        }
+    }
 }
 
 /*! \brief Print out statistics

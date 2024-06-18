@@ -73,8 +73,12 @@ int main(int argc, char** argv)
     //std::cout << "stat written\n";
     //B.writeDepthStatistics();
     //std::cout << "depth written\n";
-    B.writeUB();
-    std::cout << "UB written\n";
+    /*B.writeUB();*/
+    /*std::cout << "UB written\n";*/
+    if (argc > 8)
+        B.printUB(strcmp(argv[8], "--print-soln") == 0);
+    else
+        B.printUB();
 
     //B.writeStatProbing();
 

@@ -128,6 +128,8 @@ public:
 	 * This function write the statistics of this BB run to the stat file.
 	 */
 	void writeUB();
+  // Print result to stdout instead of file
+  void printUB(bool printSol = false);
 
 	/*! \brief Write the statistic of this run to the stat file (results.txt / .csv)
 	 *
